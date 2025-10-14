@@ -3,27 +3,31 @@ import type { ApiError, ApiResponse, RequestOptions } from '@/types/api';
 
 class ApiClient {
   private baseUrl: string;
-  private apiKey: string;
   private timeout: number;
   private enableLogging: boolean;
 
   constructor() {
     this.baseUrl = apiConfig.baseUrl;
-    this.apiKey = apiConfig.apiKey;
     this.timeout = apiConfig.timeout;
     this.enableLogging = apiConfig.enableLogging;
   }
 
   private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
-    const url = new URL(endpoint, this.baseUrl);
+    // Build URL for the proxy route
+    let url = `${this.baseUrl}${endpoint}`;
 
     if (params) {
+      const searchParams = new URLSearchParams();
       Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, String(value));
+        searchParams.append(key, String(value));
       });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
     }
 
-    return url.toString();
+    return url;
   }
 
   private log(message: string, data?: unknown): void {
@@ -44,7 +48,6 @@ class ApiClient {
 
     const defaultHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
-      'x-api-key': this.apiKey,
       ...headers,
     };
 

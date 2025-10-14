@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiConfig } from '@/config/api-config';
+import { serverApiConfig } from '@/config/api-config';
 
 export async function GET(
   request: NextRequest,
@@ -47,7 +47,7 @@ async function handleRequest(
     const searchParams = request.nextUrl.searchParams;
 
     // Build the target URL
-    const url = new URL(`${apiConfig.baseUrl}/${targetPath}`);
+    const url = new URL(`${serverApiConfig.baseUrl}/${targetPath}`);
     searchParams.forEach((value, key) => {
       url.searchParams.append(key, value);
     });
@@ -55,7 +55,7 @@ async function handleRequest(
     // Prepare headers
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
-      'x-api-key': apiConfig.apiKey,
+      'x-api-key': serverApiConfig.apiKey,
     };
 
     // Prepare request options
@@ -73,7 +73,7 @@ async function handleRequest(
     }
 
     // Log request if enabled
-    if (apiConfig.enableLogging) {
+    if (serverApiConfig.enableLogging) {
       console.log(`[API Proxy] ${method} ${url.toString()}`);
     }
 
@@ -91,7 +91,7 @@ async function handleRequest(
     }
 
     // Log response if enabled
-    if (apiConfig.enableLogging) {
+    if (serverApiConfig.enableLogging) {
       console.log(`[API Proxy] Response ${response.status}`, data);
     }
 
