@@ -1,16 +1,18 @@
 # IV API Product Viewer
 
-A Next.js test harness for viewing and testing product data from the IV Internal API.
+A comprehensive Next.js/TypeScript application for testing and validating IV Internal API product data. Built with Material Design principles using Tailwind CSS v4.
 
 ## Features
 
-- Browse and search products
-- View detailed product information
-- Interactive API explorer
-- JSON response viewer
-- React Query for efficient data fetching
-- Dark mode support
-- TypeScript for type safety
+- ✅ **Product List View** - Search and browse products with filters (store, status)
+- ✅ **Comprehensive Details View** - Organized sections covering all API fields
+- ✅ **Validation Interface** - QA tool for systematic product data validation
+- ✅ **Validation Tracking** - Pass/fail marking with comment notes for each field
+- ✅ **Export Reports** - JSON export of validation results
+- ✅ **Real API Integration** - Connected to IV Internal API
+- ✅ **Server-side API Proxy** - Secure credential handling
+- ✅ **JSON Response Viewer** - Raw API data inspection
+- ✅ **TypeScript** - Full type safety throughout the application
 
 ## Getting Started
 
@@ -86,9 +88,11 @@ npm start
 
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: React Query (TanStack Query)
+- **Styling**: Tailwind CSS v4 with @tailwindcss/postcss
+- **State Management**: TanStack Query (React Query)
+- **Icons**: Lucide React
 - **Deployment**: Vercel
+- **API Pattern**: Server-side proxy for security
 
 ## Deployment on Vercel
 

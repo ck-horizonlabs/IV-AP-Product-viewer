@@ -5,9 +5,10 @@ import { CheckCircle, XCircle } from 'lucide-react';
 interface ValidationSummaryProps {
   validationResults: Record<string, { status: string; comment: string }>;
   onClearResults?: () => void;
+  onExportReport?: () => void;
 }
 
-export function ValidationSummary({ validationResults, onClearResults }: ValidationSummaryProps) {
+export function ValidationSummary({ validationResults, onClearResults, onExportReport }: ValidationSummaryProps) {
   const passedCount = Object.values(validationResults).filter(r => r.status === 'pass').length;
   const failedCount = Object.values(validationResults).filter(r => r.status === 'fail').length;
   const totalCount = Object.keys(validationResults).length;
@@ -59,13 +60,19 @@ export function ValidationSummary({ validationResults, onClearResults }: Validat
         </div>
 
         <div className="mt-6 space-y-2">
-          <button className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium">
+          <button
+            onClick={onExportReport}
+            disabled={totalCount === 0}
+            className="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            title="Ctrl/Cmd + S"
+          >
             Export Report
           </button>
           {onClearResults && (
             <button
               onClick={onClearResults}
               className="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium"
+              title="Ctrl/Cmd + E"
             >
               Clear Results
             </button>

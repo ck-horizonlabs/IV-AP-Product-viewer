@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { useProducts } from '@/lib/api/hooks';
-import { ProductList as ValidationProductList } from '@/components/validation/ProductList';
-import { ProductDetails } from '@/components/validation/ProductDetails';
-import { ValidationSummary } from '@/components/validation/ValidationSummary';
+import { ProductList as ValidationProductList, ProductDetails, ValidationSummary } from '@/components/validation';
+import { useKeyboardShortcuts } from '@/hooks';
+import { downloadValidationReport } from '@/utils/exportReport';
 import { ProductFilters } from '@/types/products';
 
 export default function ValidationPage() {
@@ -26,6 +26,24 @@ export default function ValidationPage() {
   const clearResults = () => {
     setValidationResults({});
   };
+
+  const handleExport = () => {
+    if (Object.keys(validationResults).length === 0) {
+      alert('No validation results to export');
+      return;
+    }
+    downloadValidationReport(
+      selectedProduct?.product_id,
+      selectedProduct?.product_name,
+      validationResults
+    );
+  };
+
+  // Keyboard shortcuts: Ctrl/Cmd+S to export, Ctrl/Cmd+E to clear
+  useKeyboardShortcuts({
+    onExport: handleExport,
+    onClear: clearResults,
+  });
 
   return (
     <div className="flex h-[calc(100vh-140px)] bg-gray-100 -mx-4 -my-8 sm:-mx-6 lg:-mx-8">
@@ -50,6 +68,7 @@ export default function ValidationPage() {
       <ValidationSummary
         validationResults={validationResults}
         onClearResults={clearResults}
+        onExportReport={handleExport}
       />
     </div>
   );

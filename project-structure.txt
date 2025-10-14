@@ -1,0 +1,179 @@
+# API Validation UI - Complete Project Structure
+
+## Directory Structure
+
+```
+api-validation-ui/
+├── src/
+│   ├── components/
+│   │   ├── ProductList/
+│   │   │   ├── ProductList.tsx
+│   │   │   ├── ProductListItem.tsx
+│   │   │   └── index.ts
+│   │   ├── ProductDetails/
+│   │   │   ├── ProductDetailsView.tsx
+│   │   │   ├── DetailsTab.tsx
+│   │   │   ├── ImagesTab.tsx
+│   │   │   ├── PricingTab.tsx
+│   │   │   ├── ItineraryTab.tsx
+│   │   │   ├── RawJsonTab.tsx
+│   │   │   └── index.ts
+│   │   ├── ValidationField/
+│   │   │   ├── ValidationField.tsx
+│   │   │   └── index.ts
+│   │   ├── ValidationSummary/
+│   │   │   ├── ValidationSummary.tsx
+│   │   │   └── index.ts
+│   │   ├── ImageLightbox/
+│   │   │   ├── ImageLightbox.tsx
+│   │   │   └── index.ts
+│   │   └── Layout/
+│   │       ├── ThreeColumnLayout.tsx
+│   │       └── index.ts
+│   ├── types/
+│   │   ├── product.types.ts
+│   │   ├── validation.types.ts
+│   │   └── index.ts
+│   ├── data/
+│   │   └── mockProducts.ts
+│   ├── hooks/
+│   │   ├── useValidation.ts
+│   │   └── useKeyboardShortcuts.ts
+│   ├── utils/
+│   │   ├── exportReport.ts
+│   │   └── validation.helpers.ts
+│   ├── App.tsx
+│   └── main.tsx
+├── package.json
+├── tsconfig.json
+├── vite.config.ts
+├── tailwind.config.js
+└── README.md
+```
+
+## File Contents
+
+### 1. package.json
+```json
+{
+  "name": "api-validation-ui",
+  "version": "1.0.0",
+  "description": "API Product Validation Interface",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  }
+}
+```
+
+### 2. tsconfig.json
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
+```
+
+### 3. vite.config.ts
+```typescript
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
+```
+
+### 4. tailwind.config.js
+```javascript
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
+
+## Key Features of This Structure:
+
+### **Separation of Concerns**
+- **Components**: Broken into logical, reusable pieces
+- **Types**: Centralized TypeScript definitions
+- **Hooks**: Custom hooks for shared logic
+- **Utils**: Helper functions and business logic
+- **Data**: Mock data separated from components
+
+### **Benefits**
+1. **Maintainability**: Easy to find and update specific features
+2. **Testability**: Each component can be tested independently
+3. **Reusability**: Components can be used in other parts of the app
+4. **Type Safety**: Full TypeScript support with proper types
+5. **Scalability**: Easy to add new features without affecting existing code
+
+### **Component Organization**
+- Each major section (ProductList, ProductDetails, ValidationSummary) is its own folder
+- Related components are grouped together
+- Index files for clean imports
+- Separation of presentational and container components
+
+### **Next Steps**
+1. Run `npm install` to install dependencies
+2. Run `npm run dev` to start development server
+3. Build for production with `npm run build`
+
+Would you like me to generate the individual file contents for any specific component or file?
