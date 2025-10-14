@@ -4,7 +4,7 @@ import { use } from 'react';
 import Link from 'next/link';
 import { useProduct } from '@/lib/api/hooks';
 import { JsonViewer } from '@/components/ui/JsonViewer';
-import { formatCurrency, formatDateTime } from '@/lib/utils/formatters';
+import { formatCurrency } from '@/lib/utils/formatters';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -54,6 +54,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     );
   }
 
+  const price = product.lead_in_price ? parseFloat(product.lead_in_price) : null;
+  const regularPrice = product.regular_price ? parseFloat(product.regular_price) : null;
+  const salesPrice = product.sales_price ? parseFloat(product.sales_price) : null;
+  const currency = product.currency_code || 'AUD';
+
   return (
     <div className="space-y-6">
       <Link
@@ -65,28 +70,40 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
         <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-              {product.name}
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
+              {product.product_name}
             </h1>
-            <div className="flex items-center gap-3">
-              {product.category && (
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Category: {product.category}
-                </p>
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              {product.country && (
+                <span className="text-gray-600 dark:text-gray-400">
+                  📍 {product.country}
+                </span>
+              )}
+              {product.length && (
+                <span className="text-gray-600 dark:text-gray-400">
+                  📅 {product.length} days
+                </span>
               )}
               {product.store && (
-                <span className="px-3 py-1 text-sm bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded">
-                  Store: {product.store.toUpperCase()}
+                <span className="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded">
+                  {product.store}
+                </span>
+              )}
+              {product.pace && (
+                <span className="px-3 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded">
+                  {product.pace}
                 </span>
               )}
             </div>
           </div>
           {product.status && (
             <span
-              className={`px-3 py-1 text-sm rounded ${
-                product.status === 'active'
+              className={`px-3 py-1 text-sm rounded whitespace-nowrap ${
+                product.status.toLowerCase() === 'active'
                   ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                  : product.status.toLowerCase() === 'closed'
+                  ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
                   : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'
               }`}
             >
@@ -95,58 +112,115 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
           )}
         </div>
 
-        {product.description && (
+        {product.feature_description && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
               Description
             </h2>
-            <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
+            <div
+              className="text-gray-700 dark:text-gray-300 prose dark:prose-invert max-w-none"
+              dangerouslySetInnerHTML={{ __html: product.feature_description }}
+            />
           </div>
         )}
 
-        {product.price && (
+        {(price || regularPrice || salesPrice) && (
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Price
+              Pricing
             </h2>
-            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              {formatCurrency(product.price, product.currency)}
-            </p>
-          </div>
-        )}
-
-        {product.inventory && (
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-              Inventory
-            </h2>
-            <div className="space-y-1">
-              <p className="text-gray-700 dark:text-gray-300">
-                Quantity: {product.inventory.quantity}
-              </p>
-              <p className="text-gray-700 dark:text-gray-300">
-                Available: {product.inventory.available ? 'Yes' : 'No'}
-              </p>
+            <div className="space-y-2">
+              {price && (
+                <div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">From: </span>
+                  <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    {formatCurrency(price, currency)}
+                  </span>
+                </div>
+              )}
+              {regularPrice && regularPrice > 0 && (
+                <div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Regular Price: </span>
+                  <span className="text-gray-600 dark:text-gray-400 line-through">
+                    {formatCurrency(regularPrice, currency)}
+                  </span>
+                </div>
+              )}
+              {salesPrice && salesPrice > 0 && (
+                <div>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Sale Price: </span>
+                  <span className="text-lg font-semibold text-green-600 dark:text-green-400">
+                    {formatCurrency(salesPrice, currency)}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {(product.createdAt || product.updatedAt) && (
+        {product.tour_places && (
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Places Visited
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {JSON.parse(product.tour_places).map((place: string, i: number) => (
+                <span
+                  key={i}
+                  className="px-3 py-1 bg-indigo-50 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-200 rounded-full text-sm"
+                >
+                  {place}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {product.escorted_type && (
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Tour Type</h3>
+              <p className="text-gray-700 dark:text-gray-300">{product.escorted_type}</p>
+            </div>
+          )}
+          {product.group_size && (
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Group Size</h3>
+              <p className="text-gray-700 dark:text-gray-300">{product.group_size}</p>
+            </div>
+          )}
+          {product.flight_type && (
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Flights</h3>
+              <p className="text-gray-700 dark:text-gray-300">{product.flight_type}</p>
+            </div>
+          )}
+          {product.departure_date_range && (
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Departures</h3>
+              <p className="text-gray-700 dark:text-gray-300">{product.departure_date_range}</p>
+            </div>
+          )}
+        </div>
+
+        {product.product_url && (
+          <div>
+            <a
+              href={product.product_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            >
+              View on Inspiring Vacations →
+            </a>
+          </div>
+        )}
+
+        {product.created_at && (
           <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-            <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 dark:text-gray-400">
-              {product.createdAt && (
-                <div>
-                  <span className="font-medium">Created:</span>{' '}
-                  {formatDateTime(product.createdAt)}
-                </div>
-              )}
-              {product.updatedAt && (
-                <div>
-                  <span className="font-medium">Updated:</span>{' '}
-                  {formatDateTime(product.updatedAt)}
-                </div>
-              )}
-            </div>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Created: {new Date(product.created_at).toLocaleDateString()}
+            </p>
           </div>
         )}
       </div>

@@ -32,13 +32,15 @@ export function useProducts(
 
 export function useProduct(
   id: string | number,
-  options?: Omit<UseQueryOptions<ProductDetails>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<Product | undefined>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
     queryKey: queryKeys.productDetail(id),
     queryFn: async () => {
-      const response = await apiClient.get<ProductDetails>(endpoints.products.detail(id));
-      return response.data;
+      // API doesn't have individual product endpoint, fetch all and filter
+      const response = await apiClient.get<Product[]>(endpoints.products.list);
+      const product = response.data.find(p => p.product_id === Number(id));
+      return product;
     },
     enabled: !!id,
     ...options,

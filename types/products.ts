@@ -22,6 +22,9 @@ export interface Product {
   pace?: string;
   escorted_type?: string;
   tour_places?: string;
+  group_size?: string;
+  flight_type?: string;
+  feature_description?: string;
   // URLs
   product_url?: string;
   cdn_link?: string;
