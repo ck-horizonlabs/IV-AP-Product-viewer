@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { AlertCircle, CheckCircle, XCircle, Check, X } from 'lucide-react';
 
 interface ValidationFieldProps {
   label: string;
@@ -12,54 +11,62 @@ interface ValidationFieldProps {
 }
 
 export function ValidationField({ label, value, field, validationResults, onValidate }: ValidationFieldProps) {
-  const [comment, setComment] = useState(validationResults[field]?.comment || '');
-  const status = validationResults[field]?.status;
+  const result = validationResults[field];
+  const status = result?.status;
+  const comment = result?.comment || '';
 
-  const handleValidation = (newStatus: string) => {
-    onValidate(field, newStatus, comment);
+  const getValidationIcon = () => {
+    if (!result) return <AlertCircle className="w-4 h-4 text-gray-400" />;
+    if (result.status === 'pass') return <CheckCircle className="w-4 h-4 text-green-500" />;
+    if (result.status === 'fail') return <XCircle className="w-4 h-4 text-red-500" />;
+    return <AlertCircle className="w-4 h-4 text-yellow-500" />;
   };
 
   return (
-    <div className="mb-4 pb-4 border-b border-gray-200 last:border-b-0">
+    <div className="border-b border-gray-200 py-3">
       <div className="flex items-start justify-between mb-2">
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
-          <div className="text-sm text-gray-900 break-words">{value}</div>
+          <div className="flex items-center gap-2 mb-1">
+            {getValidationIcon()}
+            <span className="text-sm font-medium text-gray-700">{label}</span>
+          </div>
+          <div className="text-sm text-gray-900 ml-6 font-mono bg-gray-50 p-2 rounded">
+            {typeof value === 'object' ? JSON.stringify(value, null, 2) : value}
+          </div>
         </div>
-        <div className="flex gap-2 ml-4">
+        <div className="flex gap-1 ml-4">
           <button
-            onClick={() => handleValidation('pass')}
-            className={`p-2 rounded-lg transition ${
+            onClick={() => onValidate(field, 'pass', comment)}
+            className={`p-1.5 rounded ${
               status === 'pass'
                 ? 'bg-green-500 text-white'
-                : 'bg-gray-100 text-gray-400 hover:bg-green-100 hover:text-green-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-green-100'
             }`}
-            title="Mark as Pass"
           >
-            <Check className="w-5 h-5" />
+            <Check className="w-4 h-4" />
           </button>
           <button
-            onClick={() => handleValidation('fail')}
-            className={`p-2 rounded-lg transition ${
+            onClick={() => onValidate(field, 'fail', comment)}
+            className={`p-1.5 rounded ${
               status === 'fail'
                 ? 'bg-red-500 text-white'
-                : 'bg-gray-100 text-gray-400 hover:bg-red-100 hover:text-red-600'
+                : 'bg-gray-100 text-gray-600 hover:bg-red-100'
             }`}
-            title="Mark as Fail"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
       </div>
-      {status && (
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          onBlur={() => onValidate(field, status, comment)}
-          placeholder="Add validation notes..."
-          className="w-full mt-2 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          rows={2}
-        />
+      {result && (
+        <div className="ml-6 mt-2">
+          <textarea
+            placeholder="Add validation notes..."
+            value={comment}
+            onChange={(e) => onValidate(field, status, e.target.value)}
+            className="w-full text-xs border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={2}
+          />
+        </div>
       )}
     </div>
   );

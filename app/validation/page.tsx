@@ -23,6 +23,10 @@ export default function ValidationPage() {
     }));
   };
 
+  const clearResults = () => {
+    setValidationResults({});
+  };
+
   return (
     <div className="flex h-[calc(100vh-140px)] bg-gray-100 -mx-4 -my-8 sm:-mx-6 lg:-mx-8">
       {/* Left Sidebar - Product List */}
@@ -45,6 +49,7 @@ export default function ValidationPage() {
       {/* Right Sidebar - Validation Summary */}
       <ValidationSummary
         validationResults={validationResults}
+        onClearResults={clearResults}
       />
     </div>
   );
