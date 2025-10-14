@@ -46,7 +46,7 @@ export default function ValidationPage() {
   });
 
   return (
-    <div className="flex h-[calc(100vh-140px)] bg-gray-100 -mx-4 -my-8 sm:-mx-6 lg:-mx-8">
+    <div className="flex h-screen bg-gray-100 ">
       {/* Left Sidebar - Product List */}
       <ValidationProductList
         products={products || []}
