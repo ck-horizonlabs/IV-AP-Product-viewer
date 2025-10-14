@@ -1,5 +1,4 @@
 // API Endpoints
-// Update these with actual endpoints once API documentation is available
 
 export const endpoints = {
   // Product endpoints
@@ -10,12 +9,20 @@ export const endpoints = {
     categories: '/products/categories',
   },
 
-  // Add more endpoints as discovered from the API documentation
-  // Example:
-  // inventory: {
-  //   list: '/inventory',
-  //   detail: (id: string | number) => `/inventory/${id}`,
-  // },
+  // Departures/Pricing endpoints
+  departures: {
+    list: '/departures',
+  },
+
+  // Itinerary endpoints
+  itineraries: {
+    list: '/itineraries',
+  },
+
+  // Media/Images endpoints
+  mediaAssets: {
+    list: '/media-assets',
+  },
 } as const;
 
 export type EndpointPath = string;

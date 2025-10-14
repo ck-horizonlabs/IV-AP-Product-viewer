@@ -61,3 +61,42 @@ export interface ProductFilters {
   page?: number;
   perPage?: number;
 }
+
+// Departure/Pricing data
+export interface Departure {
+  departure_id: number;
+  product_id: number;
+  departure_date: string;
+  return_date?: string;
+  price: string;
+  available_seats?: number;
+  status: string;
+  store?: string;
+  currency_code?: string;
+}
+
+// Itinerary data
+export interface Itinerary {
+  itinerary_id: number;
+  product_id: number;
+  day_number: number;
+  title: string;
+  description: string;
+  location?: string;
+  meals?: string;
+  accommodation?: string;
+  activities?: string[];
+}
+
+// Media/Image assets
+export interface MediaAsset {
+  media_id: number;
+  product_id: number;
+  media_type: string; // 'image', 'video', etc.
+  url: string;
+  title?: string;
+  alt_text?: string;
+  caption?: string;
+  sort_order?: number;
+  is_primary?: boolean;
+}
