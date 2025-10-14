@@ -39,11 +39,16 @@ export function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
         </div>
-        {product.category && (
-          <div className="text-xs text-gray-500 dark:text-gray-400">
-            Category: {product.category}
-          </div>
-        )}
+        <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          {product.category && (
+            <span>Category: {product.category}</span>
+          )}
+          {product.store && (
+            <span className="px-2 py-1 bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-200 rounded">
+              {product.store.toUpperCase()}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

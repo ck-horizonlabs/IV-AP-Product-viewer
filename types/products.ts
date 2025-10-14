@@ -6,6 +6,7 @@ export interface Product {
   currency?: string;
   category?: string;
   status?: string;
+  store?: string;
   createdAt?: string;
   updatedAt?: string;
   metadata?: Record<string, unknown>;
@@ -25,6 +26,7 @@ export interface ProductFilters {
   search?: string;
   category?: string;
   status?: string;
+  store?: string;
   minPrice?: number;
   maxPrice?: number;
   page?: number;

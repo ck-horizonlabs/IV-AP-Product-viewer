@@ -69,11 +69,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
               {product.name}
             </h1>
-            {product.category && (
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Category: {product.category}
-              </p>
-            )}
+            <div className="flex items-center gap-3">
+              {product.category && (
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Category: {product.category}
+                </p>
+              )}
+              {product.store && (
+                <span className="px-3 py-1 text-sm bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded">
+                  Store: {product.store.toUpperCase()}
+                </span>
+              )}
+            </div>
           </div>
           {product.status && (
             <span
