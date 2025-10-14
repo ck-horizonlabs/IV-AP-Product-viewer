@@ -7,15 +7,14 @@ export const metadata: Metadata = {
   description: "Product validation interface for IV Internal API",
 };
 
-export default function StandaloneLayout({
+export default function ValidationLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Completely standalone layout - no header, no nav, no wrapper
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>
           {children}
         </Providers>
