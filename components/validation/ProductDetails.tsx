@@ -221,8 +221,8 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                     <div className="text-xs text-gray-600">Gallery Images</div>
                   </div>
                   <div className="bg-white rounded p-2">
-                    <div className="text-2xl font-bold text-orange-600">{mediaAssets?.filter(m => m.alt_text).length || 0}</div>
-                    <div className="text-xs text-gray-600">With Alt Text</div>
+                    <div className="text-2xl font-bold text-orange-600">{mediaAssets?.filter(m => m.title).length || 0}</div>
+                    <div className="text-xs text-gray-600">With Titles</div>
                   </div>
                 </div>
               )}
@@ -235,11 +235,11 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
               ) : mediaAssets && mediaAssets.length > 0 ? (
                 <div className="space-y-4">
                   {mediaAssets.map((media, index) => (
-                    <div key={media.media_id} className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div key={media.media_asset_id} className="border border-gray-200 rounded-lg overflow-hidden">
                       <div className="aspect-video bg-gray-100 relative group">
                         <img
-                          src={media.url}
-                          alt={media.alt_text || media.title || product.product_name}
+                          src={media.cdn_url}
+                          alt={media.title || product.product_name}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="300"%3E%3Crect fill="%23e5e7eb" width="400" height="300"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%239ca3af" font-family="sans-serif" font-size="16"%3EImage Not Found%3C/text%3E%3C/svg%3E';
@@ -254,39 +254,36 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                       <div className="p-3 bg-white">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-xs text-gray-600">
-                            {media.title || `Image ${index + 1}`} • {media.media_type}
+                            {media.title || `Image ${index + 1}`} • {media.cdn_type}
                           </span>
                           <div className="flex gap-1">
                             <button
-                              onClick={() => onValidate(`media_${media.media_id}`, 'pass', '')}
-                              className={`p-1.5 rounded ${validationResults[`media_${media.media_id}`]?.status === 'pass' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-green-100'}`}
+                              onClick={() => onValidate(`media_${media.media_asset_id}`, 'pass', '')}
+                              className={`p-1.5 rounded ${validationResults[`media_${media.media_asset_id}`]?.status === 'pass' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-green-100'}`}
                             >
                               <Check className="w-3 h-3" />
                             </button>
                             <button
-                              onClick={() => onValidate(`media_${media.media_id}`, 'fail', '')}
-                              className={`p-1.5 rounded ${validationResults[`media_${media.media_id}`]?.status === 'fail' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-red-100'}`}
+                              onClick={() => onValidate(`media_${media.media_asset_id}`, 'fail', '')}
+                              className={`p-1.5 rounded ${validationResults[`media_${media.media_asset_id}`]?.status === 'fail' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-red-100'}`}
                             >
                               <X className="w-3 h-3" />
                             </button>
                           </div>
                         </div>
-                        {media.caption && (
-                          <div className="text-xs text-gray-600 mb-2">{media.caption}</div>
-                        )}
-                        <div className="text-xs text-gray-500 mb-2 font-mono truncate" title={media.url}>
-                          {media.url}
+                        <div className="text-xs text-gray-500 mb-2 font-mono truncate" title={media.cdn_url}>
+                          {media.cdn_url}
                         </div>
-                        {media.alt_text && (
+                        {media.width && media.height && (
                           <div className="text-xs text-gray-600 mb-2">
-                            <span className="font-semibold">Alt text:</span> {media.alt_text}
+                            <span className="font-semibold">Dimensions:</span> {media.width} × {media.height}
                           </div>
                         )}
-                        {validationResults[`media_${media.media_id}`] && (
+                        {validationResults[`media_${media.media_asset_id}`] && (
                           <textarea
                             placeholder="Add image validation notes..."
-                            value={validationResults[`media_${media.media_id}`]?.comment || ''}
-                            onChange={(e) => onValidate(`media_${media.media_id}`, validationResults[`media_${media.media_id}`].status, e.target.value)}
+                            value={validationResults[`media_${media.media_asset_id}`]?.comment || ''}
+                            onChange={(e) => onValidate(`media_${media.media_asset_id}`, validationResults[`media_${media.media_asset_id}`].status, e.target.value)}
                             className="w-full text-xs border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
                             rows={2}
                           />
@@ -333,7 +330,7 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                     <div className="text-xs text-gray-600">Lowest Price</div>
                   </div>
                   <div className="bg-white rounded p-2">
-                    <div className="text-2xl font-bold text-green-600">{product.currency_code || departures?.[0]?.currency_code || 'N/A'}</div>
+                    <div className="text-2xl font-bold text-green-600">{product.currency_code || departures?.[0]?.currency || 'N/A'}</div>
                     <div className="text-xs text-gray-600">Currency</div>
                   </div>
                 </div>
@@ -358,9 +355,9 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                                 day: 'numeric'
                               })}
                             </span>
-                            {departure.return_date && (
+                            {departure.end_date && (
                               <span className="text-sm text-gray-600">
-                                → {new Date(departure.return_date).toLocaleDateString('en-US', {
+                                → {new Date(departure.end_date).toLocaleDateString('en-US', {
                                   year: 'numeric',
                                   month: 'short',
                                   day: 'numeric'
@@ -377,11 +374,11 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                           </div>
                           <div className="flex items-center gap-4 text-sm">
                             <span className="font-bold text-green-600">
-                              {departure.currency_code || product.currency_code} ${departure.price}
+                              {departure.currency || product.currency_code} ${departure.price}
                             </span>
-                            {departure.available_seats && (
+                            {departure.seats_available !== undefined && (
                               <span className="text-gray-600">
-                                {departure.available_seats} seats available
+                                {departure.seats_available} seats available
                               </span>
                             )}
                             {departure.store && (
@@ -457,7 +454,7 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                   </div>
                   <div className="bg-white rounded p-2">
                     <div className="text-2xl font-bold text-purple-600">
-                      {itineraries ? new Set(itineraries.map(i => i.location).filter(Boolean)).size : (product.tour_places ? product.tour_places.split(',').length : 0)}
+                      {itineraries ? new Set(itineraries.map(i => i.destination).filter(Boolean)).size : (product.tour_places ? product.tour_places.split(',').length : 0)}
                     </div>
                     <div className="text-xs text-gray-600">Locations</div>
                   </div>
@@ -469,9 +466,9 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                   </div>
                   <div className="bg-white rounded p-2">
                     <div className="text-2xl font-bold text-purple-600">
-                      {itineraries?.filter(i => i.accommodation).length || 0}
+                      {itineraries?.filter(i => i.hotel_name).length || 0}
                     </div>
-                    <div className="text-xs text-gray-600">Nights Included</div>
+                    <div className="text-xs text-gray-600">Nights w/ Hotels</div>
                   </div>
                 </div>
               )}
@@ -483,26 +480,26 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                 <div className="text-center py-8 text-gray-500">Loading itinerary...</div>
               ) : itineraries && itineraries.length > 0 ? (
                 <div className="space-y-4">
-                  {itineraries.sort((a, b) => a.day_number - b.day_number).map((day) => (
-                    <div key={day.itinerary_id} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+                  {itineraries.sort((a, b) => a.day - b.day).map((day, idx) => (
+                    <div key={`day-${day.product_id}-${day.day}-${idx}`} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
                       <div className="bg-purple-50 px-4 py-2 border-b border-purple-200">
                         <div className="flex items-center justify-between">
                           <div>
-                            <span className="text-sm font-bold text-purple-900">Day {day.day_number}</span>
-                            {day.location && (
-                              <span className="text-sm text-purple-700 ml-2">• {day.location}</span>
+                            <span className="text-sm font-bold text-purple-900">Day {day.day}</span>
+                            {day.destination && (
+                              <span className="text-sm text-purple-700 ml-2">• {day.destination}</span>
                             )}
                           </div>
                           <div className="flex gap-1">
                             <button
-                              onClick={() => onValidate(`itinerary_day_${day.itinerary_id}`, 'pass', '')}
-                              className={`p-1.5 rounded ${validationResults[`itinerary_day_${day.itinerary_id}`]?.status === 'pass' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-green-100'}`}
+                              onClick={() => onValidate(`itinerary_day_${day.product_id}_${day.day}`, 'pass', '')}
+                              className={`p-1.5 rounded ${validationResults[`itinerary_day_${day.product_id}_${day.day}`]?.status === 'pass' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-green-100'}`}
                             >
                               <Check className="w-3 h-3" />
                             </button>
                             <button
-                              onClick={() => onValidate(`itinerary_day_${day.itinerary_id}`, 'fail', '')}
-                              className={`p-1.5 rounded ${validationResults[`itinerary_day_${day.itinerary_id}`]?.status === 'fail' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-red-100'}`}
+                              onClick={() => onValidate(`itinerary_day_${day.product_id}_${day.day}`, 'fail', '')}
+                              className={`p-1.5 rounded ${validationResults[`itinerary_day_${day.product_id}_${day.day}`]?.status === 'fail' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-red-100'}`}
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -510,8 +507,8 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                         </div>
                       </div>
                       <div className="p-4">
-                        {day.title && (
-                          <h4 className="text-base font-semibold text-gray-900 mb-2">{day.title}</h4>
+                        {day.name && (
+                          <h4 className="text-base font-semibold text-gray-900 mb-2">{day.name}</h4>
                         )}
                         {day.description && (
                           <p className="text-sm text-gray-700 mb-3 leading-relaxed">{day.description}</p>
@@ -523,24 +520,28 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
                               <div className="text-sm text-gray-800">{day.meals}</div>
                             </div>
                           )}
-                          {day.accommodation && (
+                          {day.hotel_name && (
                             <div>
-                              <div className="text-xs font-semibold text-gray-600 mb-1">Accommodation</div>
-                              <div className="text-sm text-gray-800">{day.accommodation}</div>
+                              <div className="text-xs font-semibold text-gray-600 mb-1">Hotel</div>
+                              <div className="text-sm text-gray-800">
+                                {day.hotel_name} {day.star_rating && `(${day.star_rating})`}
+                              </div>
                             </div>
                           )}
-                          {day.activities && day.activities.length > 0 && (
+                          {(day.breakfast_count || day.lunch_count || day.dinner_count) ? (
                             <div>
-                              <div className="text-xs font-semibold text-gray-600 mb-1">Activities</div>
-                              <div className="text-sm text-gray-800">{day.activities.join(', ')}</div>
+                              <div className="text-xs font-semibold text-gray-600 mb-1">Meal Count</div>
+                              <div className="text-sm text-gray-800">
+                                B:{day.breakfast_count || 0} L:{day.lunch_count || 0} D:{day.dinner_count || 0}
+                              </div>
                             </div>
-                          )}
+                          ) : null}
                         </div>
-                        {validationResults[`itinerary_day_${day.itinerary_id}`] && (
+                        {validationResults[`itinerary_day_${day.product_id}_${day.day}`] && (
                           <textarea
                             placeholder="Add day validation notes..."
-                            value={validationResults[`itinerary_day_${day.itinerary_id}`]?.comment || ''}
-                            onChange={(e) => onValidate(`itinerary_day_${day.itinerary_id}`, validationResults[`itinerary_day_${day.itinerary_id}`].status, e.target.value)}
+                            value={validationResults[`itinerary_day_${day.product_id}_${day.day}`]?.comment || ''}
+                            onChange={(e) => onValidate(`itinerary_day_${day.product_id}_${day.day}`, validationResults[`itinerary_day_${day.product_id}_${day.day}`].status, e.target.value)}
                             className="w-full text-xs border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-500 mt-3"
                             rows={2}
                           />
@@ -557,7 +558,7 @@ export function ProductDetails({ product, validationResults, onValidate }: Produ
             <div className="border-t border-gray-200 pt-4">
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Itinerary Summary</h3>
               <ValidationField label="Total Days" value={itineraries?.length || product.length || 0} field="itinerary_total_days" validationResults={validationResults} onValidate={onValidate} />
-              <ValidationField label="Locations Covered" value={itineraries ? new Set(itineraries.map(i => i.location).filter(Boolean)).size : 0} field="itinerary_locations" validationResults={validationResults} onValidate={onValidate} />
+              <ValidationField label="Locations Covered" value={itineraries ? new Set(itineraries.map(i => i.destination).filter(Boolean)).size : 0} field="itinerary_locations" validationResults={validationResults} onValidate={onValidate} />
               <ValidationField label="Tour Pace" value={product.pace || 'N/A'} field="tour_pace" validationResults={validationResults} onValidate={onValidate} />
             </div>
           </div>

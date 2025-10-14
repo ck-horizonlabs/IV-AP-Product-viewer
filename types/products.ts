@@ -66,37 +66,60 @@ export interface ProductFilters {
 export interface Departure {
   departure_id: number;
   product_id: number;
+  product_name: string;
+  store: string;
+  product_status: string;
+  external_id: number;
+  cms_external_id: string;
   departure_date: string;
-  return_date?: string;
+  end_date?: string;
+  seats_available?: number;
+  seats_total?: number;
   price: string;
-  available_seats?: number;
+  twin_price?: string;
+  single_supplement_cost?: string;
   status: string;
-  store?: string;
-  currency_code?: string;
+  currency?: string;
+  updated_at?: string;
 }
 
 // Itinerary data
 export interface Itinerary {
-  itinerary_id: number;
   product_id: number;
-  day_number: number;
-  title: string;
+  store: string;
+  product_status: string;
+  day: number;
+  name: string;
+  destination: string;
   description: string;
-  location?: string;
-  meals?: string;
-  accommodation?: string;
-  activities?: string[];
+  hotel_name?: string;
+  star_rating?: string;
+  rating?: number;
+  website?: string;
+  meals?: string | null;
+  breakfast_count?: number;
+  lunch_count?: number;
+  dinner_count?: number;
 }
 
 // Media/Image assets
 export interface MediaAsset {
-  media_id: number;
+  media_asset_id: string;
   product_id: number;
-  media_type: string; // 'image', 'video', etc.
-  url: string;
+  external_id: number;
+  store: string;
+  product_status: string;
+  directus_files_id: string;
+  cms_external_id: number;
+  media_type: string;
+  cdn_type: string;
+  cdn_url: string;
   title?: string;
-  alt_text?: string;
-  caption?: string;
-  sort_order?: number;
-  is_primary?: boolean;
+  width?: number;
+  height?: number;
+  sort_order?: number | null;
+  is_primary?: boolean | null;
+  ordinal?: number;
+  created_at?: string;
+  updated_at?: string | null;
 }
