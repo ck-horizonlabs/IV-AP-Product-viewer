@@ -1,6 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Import all Tailwind colors including orange, purple, etc */
+  --color-*: initial;
+}
 
 :root {
   --background: #ffffff;
