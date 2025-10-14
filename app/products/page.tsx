@@ -16,7 +16,7 @@ export default function ProductsPage() {
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Products</h1>
         {data && (
           <p className="text-gray-600 dark:text-gray-400">
-            {data.total} product{data.total !== 1 ? 's' : ''} found
+            {data.length} product{data.length !== 1 ? 's' : ''} found
           </p>
         )}
       </div>
@@ -31,25 +31,7 @@ export default function ProductsPage() {
         </div>
       )}
 
-      <ProductList products={data?.data || []} isLoading={isLoading} />
-
-      {data && data.totalPages > 1 && (
-        <div className="flex justify-center gap-2 pt-4">
-          {[...Array(data.totalPages)].map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setFilters({ ...filters, page: i + 1 })}
-              className={`px-3 py-1 rounded ${
-                (filters.page || 1) === i + 1
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-      )}
+      <ProductList products={data || []} isLoading={isLoading} />
     </div>
   );
 }

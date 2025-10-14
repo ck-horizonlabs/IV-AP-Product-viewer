@@ -14,15 +14,16 @@ export const queryKeys = {
 // Products hooks
 export function useProducts(
   filters?: ProductFilters,
-  options?: Omit<UseQueryOptions<PaginatedResponse<Product>>, 'queryKey' | 'queryFn'>
+  options?: Omit<UseQueryOptions<Product[]>, 'queryKey' | 'queryFn'>
 ) {
   return useQuery({
     queryKey: queryKeys.productsList(filters),
     queryFn: async () => {
-      const response = await apiClient.get<PaginatedResponse<Product>>(
+      const response = await apiClient.get<Product[]>(
         endpoints.products.list,
         { params: filters as Record<string, string | number | boolean> }
       );
+      // API returns array directly, not wrapped in pagination object
       return response.data;
     },
     ...options,
